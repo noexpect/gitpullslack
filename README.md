@@ -12,7 +12,7 @@ So it is enough fo sync by `git pull origin (local baranch)` on (develop branch)
 
 ```
 
-$ gitpullslack --git.path ""/bin/git" --git.origin "https://github.com/foo/bar.git" --git.branch.merge.from "local" --git.branch.merge.to "develop" --slack.token "XXXXXX" --slack.channel "general" --command.after.git.pull "supervisorctl restart target_app"
+$ gitpullslack --git.path "/bin/git" --git.origin "https://github.com/foo/bar.git" --git.branch.merge.from "local" --git.branch.merge.to "develop" --slack.token "XXXXXX" --slack.channel "general" --command.after.git.pull "supervisorctl restart target_app"
 # watching local development branch push after run
 
 ```
