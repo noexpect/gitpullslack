@@ -41,7 +41,8 @@ TODO
 - run system command
 -- git branch develop
 -- git fetch
--- git merge dry run (also get merge diff)
+-- git diff (develop) origin/(local)
+-- git merge dry run
 -- git pull origin local
 
 - slack notify
