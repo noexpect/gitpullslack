@@ -26,7 +26,6 @@ func main() {
 
 	fmt.Printf("--git.path:%s, --git.origin:%s, --git.branch.merge.from:%s, --git.branch.merge.to:%s, --slack.token:%s, --slack.channel:%s, --command.after.git.pull:%s", gitPath, gitOrigin, gitBranchMergeFrom, gitBranchMergeTo, slackToken, slackChannel, commandAfterGitPull)
 }
-
 /*
 TODO
 [done]- get command line flags
@@ -44,6 +43,7 @@ TODO
 -- git diff (develop) origin/(local)
 -- git merge dry run
 -- git pull origin local
+-- command after git pull
 
 - slack notify
 -- send merge diff
@@ -67,3 +67,4 @@ TODO
 -- restart process
 
  */
+
