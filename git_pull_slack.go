@@ -4,7 +4,7 @@ import "fmt"
 import (
 	"flag"
 	"os/exec"
-	"log"
+	"bytes"
 )
 
 func main() {
@@ -31,11 +31,20 @@ func main() {
 	fmt.Printf("--git.path:%s, --git.origin:%s, --git.branch.merge.from:%s, --git.branch.merge.to:%s, --slack.token:%s, --slack.channel:%s, --command.after.git.pull:%s\n", gitPath, gitOrigin, gitBranchMergeFrom, gitBranchMergeTo, slackToken, slackChannel, commandAfterGitPull)
 
 	//run command
-	out, err := exec.Command("git", "version").Output()
+	//cmd := exec.Command("sh", "-c", "ls")
+	//cmd := exec.Command("git", "-C","./gitpullslack/", "fetch", "origin", "master")
+	cmd := exec.Command("sh", "-c","git fetch origin master")
+	cmd.Dir = "./gitpullslack"
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
+		return
 	}
-	fmt.Printf("%s\n", out)
+	fmt.Println("Result: " + out.String())
 }
 /*
 TODO
