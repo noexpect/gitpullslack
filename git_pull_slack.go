@@ -1,7 +1,11 @@
 package main
 
 import "fmt"
-import "flag"
+import (
+	"flag"
+	"os/exec"
+	"log"
+)
 
 func main() {
 	// get flags
@@ -24,7 +28,14 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Printf("--git.path:%s, --git.origin:%s, --git.branch.merge.from:%s, --git.branch.merge.to:%s, --slack.token:%s, --slack.channel:%s, --command.after.git.pull:%s", gitPath, gitOrigin, gitBranchMergeFrom, gitBranchMergeTo, slackToken, slackChannel, commandAfterGitPull)
+	fmt.Printf("--git.path:%s, --git.origin:%s, --git.branch.merge.from:%s, --git.branch.merge.to:%s, --slack.token:%s, --slack.channel:%s, --command.after.git.pull:%s\n", gitPath, gitOrigin, gitBranchMergeFrom, gitBranchMergeTo, slackToken, slackChannel, commandAfterGitPull)
+
+	//run command
+	out, err := exec.Command("git", "version").Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", out)
 }
 /*
 TODO
