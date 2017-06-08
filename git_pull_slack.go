@@ -3,8 +3,7 @@ package main
 import "fmt"
 import (
 	"flag"
-	"os/exec"
-	"bytes"
+	"github.com/codeskyblue/go-sh"
 )
 
 func main() {
@@ -30,21 +29,10 @@ func main() {
 
 	fmt.Printf("--git.path:%s, --git.origin:%s, --git.branch.merge.from:%s, --git.branch.merge.to:%s, --slack.token:%s, --slack.channel:%s, --command.after.git.pull:%s\n", gitPath, gitOrigin, gitBranchMergeFrom, gitBranchMergeTo, slackToken, slackChannel, commandAfterGitPull)
 
-	//run command
-	//cmd := exec.Command("sh", "-c", "ls")
-	//cmd := exec.Command("git", "-C","./gitpullslack/", "fetch", "origin", "master")
-	cmd := exec.Command("sh", "-c","git fetch origin master")
-	cmd.Dir = "./gitpullslack"
-	var out bytes.Buffer
-	var stderr bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println(fmt.Sprint(err) + ": " + stderr.String())
-		return
-	}
-	fmt.Println("Result: " + out.String())
+	session := sh.NewSession()
+	session.SetDir("./gitpullslack")
+	session.Command("git", "fetch",  "origin", "master").Run()
+	session.ShowCMD = true
 }
 /*
 TODO
