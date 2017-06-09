@@ -4,6 +4,7 @@ import "fmt"
 import (
 	"flag"
 	"github.com/codeskyblue/go-sh"
+	"github.com/nlopes/slack"
 )
 
 func main() {
@@ -31,8 +32,24 @@ func main() {
 
 	session := sh.NewSession()
 	session.SetDir("./gitpullslack")
+	session.Command("git", "branch").Run()
 	session.Command("git", "fetch",  "origin", "master").Run()
+	session.Command("git", "diff").Run()
 	session.ShowCMD = true
+
+	//call slack api
+	api := slack.New("YOUR_TOKEN_HERE")
+	// If you set debugging, it will log all requests to the console
+	// Useful when encountering issues
+	// api.SetDebug(true)
+	groups, err := api.GetGroups(false)
+	if err != nil {
+		fmt.Printf("%s\n", err)
+		return
+	}
+	for _, group := range groups {
+		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
+	}
 }
 /*
 TODO
@@ -45,15 +62,23 @@ TODO
 -- slack channel
 -- after pull command(ex. supervisor restart)
 
-- run system command
+[done]- run system command
 -- git branch develop
 -- git fetch
 -- git diff (develop) origin/(local)
+// do them later
 -- git merge dry run
 -- git pull origin local
 -- command after git pull
 
-- slack notify
+[doing]- load external yml
+-- install lib
+-- read yml
+-- set gitignore
+-- save slack api token
+
+[doing]- slack notify
+-- install lib
 -- send merge diff
 -- show reaction button
 -- merge by reaction callback
