@@ -1,10 +1,12 @@
 package main
 
-import "fmt"
 import (
 	"flag"
 	"github.com/codeskyblue/go-sh"
-	"github.com/nlopes/slack"
+	//"github.com/nlopes/slack"
+	"fmt"
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
 )
 
 func main() {
@@ -37,6 +39,7 @@ func main() {
 	session.Command("git", "diff").Run()
 	session.ShowCMD = true
 
+	/*
 	//call slack api
 	api := slack.New("YOUR_TOKEN_HERE")
 	// If you set debugging, it will log all requests to the console
@@ -44,13 +47,30 @@ func main() {
 	// api.SetDebug(true)
 	groups, err := api.GetGroups(false)
 	if err != nil {
-		fmt.Printf("%s\n", err)
+		fmt.Printf("slack:%s\n", err)
 		return
 	}
 	for _, group := range groups {
 		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
 	}
+	*/
+
+	// load yaml
+	buf, err := ioutil.ReadFile("./gitpullslack/conf.yml")
+	if err != nil {
+		fmt.Printf("yml_read%s\n", err)
+	}
+
+	m := make(map[interface{}]interface{})
+	err = yaml.Unmarshal(buf, &m)
+	if err != nil {
+		fmt.Printf("yml_marsh:%s\n", err)
+	}
+
+	fmt.Printf("%s\n", m["slack_token"])
+
 }
+
 /*
 TODO
 [done]- get command line flags
