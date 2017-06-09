@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"github.com/codeskyblue/go-sh"
-	//"github.com/nlopes/slack"
 	"fmt"
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
+	//"github.com/nlopes/slack"
 )
 
 func main() {
@@ -39,22 +39,6 @@ func main() {
 	session.Command("git", "diff").Run()
 	session.ShowCMD = true
 
-	/*
-	//call slack api
-	api := slack.New("YOUR_TOKEN_HERE")
-	// If you set debugging, it will log all requests to the console
-	// Useful when encountering issues
-	// api.SetDebug(true)
-	groups, err := api.GetGroups(false)
-	if err != nil {
-		fmt.Printf("slack:%s\n", err)
-		return
-	}
-	for _, group := range groups {
-		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
-	}
-	*/
-
 	// load yaml
 	buf, err := ioutil.ReadFile("./gitpullslack/conf.yml")
 	if err != nil {
@@ -68,6 +52,20 @@ func main() {
 	}
 
 	fmt.Printf("%s\n", m["slack_token"])
+
+	/*
+	//call slack api
+	api := slack.New("YOUR_TOKEN")
+	//api.SetDebug(true)
+	groups, err := api.GetGroups(false)
+	if err != nil {
+		fmt.Printf("slack:%s\n", err)
+		return
+	}
+	for _, group := range groups {
+		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
+	}
+	*/
 
 }
 
@@ -91,7 +89,7 @@ TODO
 -- git pull origin local
 -- command after git pull
 
-[doing]- load external yml
+[done]- load external yml
 -- install lib
 -- read yml
 -- set gitignore
