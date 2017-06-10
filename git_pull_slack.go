@@ -95,8 +95,13 @@ TODO
 -- set gitignore
 -- save slack api token
 
+[doing]- debug
+-- install debugger(delve)
+-- how to use it
+
 [doing]- slack notify
 -- install lib
+-- try another lib
 -- send merge diff
 -- show reaction button
 -- merge by reaction callback
@@ -118,4 +123,5 @@ TODO
 -- restart process
 
  */
+
 
