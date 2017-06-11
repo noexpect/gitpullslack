@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"flag"
 	"github.com/codeskyblue/go-sh"
+	"github.com/nlopes/slack"
+	"log"
+	"gopkg.in/yaml.v2"
+	"os"
+	"io/ioutil"
 )
 	//"github.com/nlopes/slack"
 
@@ -46,22 +51,47 @@ func main() {
 	session.ShowCMD = true // for debug
 	fmt.Println(slackMessage)
 
-	/*
-	//call slack api
-	api := slack.New("YOUR_TOKEN_HERE")
-	// If you set debugging, it will log all requests to the console
-	// Useful when encountering issues
-	// api.SetDebug(true)
-	groups, err := api.GetGroups(false)
+	// load yaml
+	buf, err := ioutil.ReadFile("./gitpullslack/conf.yml")
 	if err != nil {
-		fmt.Printf("%s\n", err)
-		return
+		fmt.Printf("yml_read%s\n", err)
 	}
-	for _, group := range groups {
-		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
+
+	m := make(map[interface{}]interface{})
+	err = yaml.Unmarshal(buf, &m)
+	if err != nil {
+		fmt.Printf("yml_marsh:%s\n", err)
 	}
-	*/
+
+	fmt.Printf("%s\n", m["slack_token"])
+	api := slack.New(m["slack_token"].(string))
+	os.Exit(run(api))
 }
+
+func run(api *slack.Client) int {
+	rtm := api.NewRTM()
+	go rtm.ManageConnection()
+
+	for {
+		select {
+		case msg := <-rtm.IncomingEvents:
+			switch ev := msg.Data.(type) {
+			case *slack.HelloEvent:
+				log.Print("Hello Event")
+
+			case *slack.MessageEvent:
+				log.Printf("Message: %v\n", ev)
+				rtm.SendMessage(rtm.NewOutgoingMessage("Hello world", ev.Channel))
+
+			case *slack.InvalidAuthEvent:
+				log.Print("Invalid credentials")
+				return 1
+
+			}
+		}
+	}
+}
+
 /*
 TODO
 [done]- get command line flags
@@ -93,6 +123,10 @@ TODO
 -- send merge diff
 -- show reaction button
 -- merge by reaction callback
+
+[doing]- debug
+-- install debugger(delve)
+-- how to use it
 
 - err handle
 -- logging
