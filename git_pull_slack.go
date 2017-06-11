@@ -34,14 +34,17 @@ func main() {
 	session.SetDir("./gitpullslack")
 	branch, _ := session.Command("git", "branch").Output()
 	fmt.Printf("branch:%s",branch)
+	slackMessage := ""
 	if session.Test("executable", "git fetch origin master"){
 		session.Command("git", "fetch",  "origin", "master").Run()
-		session.Command("git", "diff").Run()
+		diff, _ := session.Command("git", "diff").Output()
+		slackMessage = string(diff)
 	}else  {
-		fmt.Println("no updates")
+		slackMessage = "no updates"
+
 	}
 	session.ShowCMD = true // for debug
-
+	fmt.Println(slackMessage)
 
 	/*
 	//call slack api
