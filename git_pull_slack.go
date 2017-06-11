@@ -1,13 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"flag"
 	"github.com/codeskyblue/go-sh"
-	"fmt"
-	"io/ioutil"
+	"github.com/nlopes/slack"
+	"log"
 	"gopkg.in/yaml.v2"
-	//"github.com/nlopes/slack"
+	"os"
+	"io/ioutil"
 )
+	//"github.com/nlopes/slack"
 
 func main() {
 	// get flags
@@ -34,10 +37,19 @@ func main() {
 
 	session := sh.NewSession()
 	session.SetDir("./gitpullslack")
-	session.Command("git", "branch").Run()
-	session.Command("git", "fetch",  "origin", "master").Run()
-	session.Command("git", "diff").Run()
-	session.ShowCMD = true
+	branch, _ := session.Command("git", "branch").Output()
+	fmt.Printf("branch:%s",branch)
+	slackMessage := ""
+	if session.Test("executable", "git fetch origin master"){
+		session.Command("git", "fetch",  "origin", "master").Run()
+		diff, _ := session.Command("git", "diff").Output()
+		slackMessage = string(diff)
+	}else  {
+		slackMessage = "no updates"
+
+	}
+	session.ShowCMD = true // for debug
+	fmt.Println(slackMessage)
 
 	// load yaml
 	buf, err := ioutil.ReadFile("./gitpullslack/conf.yml")
@@ -52,20 +64,32 @@ func main() {
 	}
 
 	fmt.Printf("%s\n", m["slack_token"])
+	api := slack.New(m["slack_token"].(string))
+	os.Exit(run(api))
+}
 
-	/*
-	//call slack api
-	api := slack.New("YOUR_TOKEN")
-	//api.SetDebug(true)
-	groups, err := api.GetGroups(false)
-	if err != nil {
-		fmt.Printf("slack:%s\n", err)
-		return
+func run(api *slack.Client) int {
+	rtm := api.NewRTM()
+	go rtm.ManageConnection()
+
+	for {
+		select {
+		case msg := <-rtm.IncomingEvents:
+			switch ev := msg.Data.(type) {
+			case *slack.HelloEvent:
+				log.Print("Hello Event")
+
+			case *slack.MessageEvent:
+				log.Printf("Message: %v\n", ev)
+				rtm.SendMessage(rtm.NewOutgoingMessage("hi", ev.Channel))
+
+			case *slack.InvalidAuthEvent:
+				log.Print("Invalid credentials")
+				return 1
+
+			}
+		}
 	}
-	for _, group := range groups {
-		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
-	}
-	*/
 
 }
 
@@ -95,16 +119,15 @@ TODO
 -- set gitignore
 -- save slack api token
 
-[doing]- debug
--- install debugger(delve)
--- how to use it
-
 [doing]- slack notify
 -- install lib
--- try another lib
 -- send merge diff
 -- show reaction button
 -- merge by reaction callback
+
+[doing]- debug
+-- install debugger(delve)
+-- how to use it
 
 - err handle
 -- logging
@@ -123,5 +146,3 @@ TODO
 -- restart process
 
  */
-
-
