@@ -33,8 +33,12 @@ func main() {
 	session := sh.NewSession()
 	session.SetDir("./gitpullslack")
 	session.Command("git", "branch").Run()
-	session.Command("git", "fetch",  "origin", "master").Run()
-	session.Command("git", "diff").Run()
+	if session.Test("executable", "git fetch origin master"){
+		session.Command("git", "fetch",  "origin", "master").Run()
+		session.Command("git", "diff").Run()
+	}else  {
+		fmt.Println("no updates")
+	}
 	session.ShowCMD = true
 
 	/*
