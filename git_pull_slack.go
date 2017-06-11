@@ -1,11 +1,11 @@
 package main
 
-import "fmt"
 import (
+	"fmt"
 	"flag"
 	"github.com/codeskyblue/go-sh"
-	"github.com/nlopes/slack"
 )
+	//"github.com/nlopes/slack"
 
 func main() {
 	// get flags
@@ -37,6 +37,7 @@ func main() {
 	session.Command("git", "diff").Run()
 	session.ShowCMD = true
 
+	/*
 	//call slack api
 	api := slack.New("YOUR_TOKEN_HERE")
 	// If you set debugging, it will log all requests to the console
@@ -50,6 +51,7 @@ func main() {
 	for _, group := range groups {
 		fmt.Printf("ID: %s, Name: %s\n", group.ID, group.Name)
 	}
+	*/
 }
 /*
 TODO
@@ -71,7 +73,7 @@ TODO
 -- git pull origin local
 -- command after git pull
 
-[doing]- load external yml
+[done]- load external yml
 -- install lib
 -- read yml
 -- set gitignore
