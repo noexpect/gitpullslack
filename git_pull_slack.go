@@ -65,12 +65,12 @@ func main() {
 
 	fmt.Printf("%s\n", m["slack_token"])
 	api := slack.New(m["slack_token"].(string))
-	os.Exit(run(api))
+	os.Exit(run(api, slackMessage))
 }
 
-func run(api *slack.Client) int {
+func run(api *slack.Client, mes string) int {
 	rtm := api.NewRTM()
-	rtm.SendMessage(rtm.NewOutgoingMessage("only send", "C52U4FUJF")) // input chnel as channel id
+	rtm.SendMessage(rtm.NewOutgoingMessage(mes, "C52U4FUJF")) // input chnel as channel id
 	go rtm.ManageConnection()
 
 	for {
