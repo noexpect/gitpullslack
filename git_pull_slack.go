@@ -70,6 +70,7 @@ func main() {
 
 func run(api *slack.Client) int {
 	rtm := api.NewRTM()
+	rtm.SendMessage(rtm.NewOutgoingMessage("only send", "C52U4FUJF")) // input chnel as channel id
 	go rtm.ManageConnection()
 
 	for {
@@ -81,6 +82,7 @@ func run(api *slack.Client) int {
 
 			case *slack.MessageEvent:
 				log.Printf("Message: %v\n", ev)
+				log.Printf("Channel: %v\n", ev.Channel)
 				rtm.SendMessage(rtm.NewOutgoingMessage("hi", ev.Channel))
 
 			case *slack.InvalidAuthEvent:
