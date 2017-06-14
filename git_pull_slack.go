@@ -64,13 +64,15 @@ func main() {
 	}
 
 	fmt.Printf("%s\n", m["slack_token"])
-	api := slack.New(m["slack_token"].(string))
-	os.Exit(run(api, slackMessage))
+	slackToken = m["slack_token"].(string)
+	slackChannel = m["slack_channel"].(string)
+	api := slack.New(slackToken)
+	os.Exit(run(api, slackMessage, slackChannel))
 }
 
-func run(api *slack.Client, mes string) int {
+func run(api *slack.Client, mes string, channel string) int {
 	rtm := api.NewRTM()
-	rtm.SendMessage(rtm.NewOutgoingMessage(mes, "C52U4FUJF")) // input chnel as channel id
+	rtm.SendMessage(rtm.NewOutgoingMessage(mes, channel)) // input chnel as channel id
 	go rtm.ManageConnection()
 
 	for {
