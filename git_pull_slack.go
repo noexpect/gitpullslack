@@ -5,9 +5,7 @@ import (
 	"flag"
 	"github.com/codeskyblue/go-sh"
 	"github.com/nlopes/slack"
-	"log"
 	"gopkg.in/yaml.v2"
-	"os"
 	"io/ioutil"
 )
 	//"github.com/nlopes/slack"
@@ -67,12 +65,14 @@ func main() {
 	slackToken = m["slack_token"].(string)
 	slackChannel = m["slack_channel"].(string)
 	api := slack.New(slackToken)
-	os.Exit(run(api, slackMessage, slackChannel))
+	//os.Exit(run(api, slackMessage, slackChannel))
+	run(api, slackMessage, slackChannel)
 }
 
-func run(api *slack.Client, mes string, channel string) int {
+func run(api *slack.Client, mes string, channel string) {
 	rtm := api.NewRTM()
 	rtm.SendMessage(rtm.NewOutgoingMessage(mes, channel)) // input chnel as channel id
+	/*
 	go rtm.ManageConnection()
 
 	for {
@@ -94,6 +94,7 @@ func run(api *slack.Client, mes string, channel string) int {
 			}
 		}
 	}
+	*/
 
 }
 
